@@ -1,7 +1,6 @@
-# Answer: 30487
+# Answer: 31954
 
 import numpy as np
-
 
 def get_mirror_count(m, axis=0, n_diff=0):
 
