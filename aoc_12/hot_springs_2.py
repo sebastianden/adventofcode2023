@@ -2,8 +2,6 @@
 
 from tqdm import tqdm
 from functools import lru_cache, cache
-
-
 @cache
 def check_combination(combination, damaged_groups):
     if len(combination) == 0:
