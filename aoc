@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# Initialize the maximum number to zero
+max_num=0
+
+# Search for directories matching the pattern 'aoc_XX' in the current directory
+for dir in aoc_*; do
+  # Check if the directory name matches the expected pattern
+  if [[ -d "$dir" && $dir =~ aoc_([0-9]+) ]]; then
+    # Extract the number from the directory name and compare to the current max
+    num=${BASH_REMATCH[1]}
+    if ((num > max_num)); then
+      max_num=$num
+    fi
+  fi
+done
+
+# Increment the number to get the new directory name
+new_num=$((max_num + 1))
+new_dir="aoc_$new_num"
+
+# Create the new directory
+mkdir "$new_dir"
+
+# Create the empty input files within the new directory
+touch "$new_dir/example_input.txt"
+touch "$new_dir/input.txt"
+
+# Determine the base name of the Python files
+if [ $# -eq 1 ]; then
+  # If an argument is provided, use it as the base name
+  base_name=$1
+else
+  # Default base name if no argument is provided
+  base_name="sample"
+fi
+
+# Create the Python files using the provided or default base name
+echo "# Answer:" > "$new_dir/${base_name}_1.py"
+echo "# Answer:" > "$new_dir/${base_name}_2.py"
+
+# Make the Python files executable
+chmod +x "$new_dir/${base_name}_1.py"
+chmod +x "$new_dir/${base_name}_2.py"
+
+echo "Created new folder '$new_dir' with required files."
