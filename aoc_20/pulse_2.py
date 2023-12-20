@@ -1,4 +1,4 @@
-# Answer:
+# Answer: 224602011344203
 
 from math import prod
 
@@ -43,22 +43,20 @@ if __name__ == '__main__':
     # print(circuit)
     # print(state)
 
-    rx_inputs = [i for i in circuit['rx']['input']]
-    print(rx_inputs)
+    # rx only has one input: the conjunction &xm, it only produces a low pulse
+    # if all of its inputs are high. Count how long it takes for each of xm's
+    # inputs to go high individually, and multiply them together.
+    xm_inputs = {i: 0 for i in circuit['xm']['input']}
+
+    p = 1
 
     while True:
-        p = 1
         rx = 0
-
-        #print(f"------ button press {p} -------")
         queue = [('button', 'broadcaster', False)]
 
         while queue:
             prev_mod, mod, pulse_in = queue.pop(0)
-            #print(f"{prev_mod} -{'high' if pulse_in else 'low'} -> {mod}")
-
-            if mod == 'rx' and pulse_in == False:
-                rx += 1
+            # print(f"{prev_mod} -{'high' if pulse_in else 'low'} -> {mod}")
 
             if mod in circuit:
                 # Calculate the state of the current module
@@ -77,9 +75,19 @@ if __name__ == '__main__':
                         pulse_out = False
                     else:
                         pulse_out = True
+                    if mod == 'xm':
+                        for k, v in state['xm'].items():
+                            if v:
+                                xm_inputs[k] = p
+
                 else:
                     pulse_out = pulse_in
                 # Add the next modules to the queue
                 queue.extend([(mod, output_mod, pulse_out) for output_mod in circuit[mod]['output']])
+
+        if all(xm_inputs.values()):
+            print(xm_inputs)
+            print(prod(xm_inputs.values()))
+            break
 
         p += 1
