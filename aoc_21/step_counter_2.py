@@ -47,7 +47,7 @@ if __name__ == '__main__':
     points = get_points(data)
     print(points)
 
-    # Quadratic equation with 3 unknows -> calculate 3 points
+    # Quadratic equation with 3 unknowns -> calculate 3 points
     # f(x) = ax^2 + bx + c
     # f(65) = 3691
     # f(65 + 131) = 32975
