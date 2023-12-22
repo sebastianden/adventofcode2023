@@ -1,4 +1,4 @@
-# Answer:
+# Answer: 66530
 
 def get_in_between_coordinates(start, end):
     # Find which coordinate is different
