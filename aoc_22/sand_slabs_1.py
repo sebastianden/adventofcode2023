@@ -27,12 +27,14 @@ def is_supported_by(block, blocks):
     x2, y2, z2 = coords[-1]
     z = z1 - 1
     # Ground
+    # We only need to check the blocks that are below the current block
+    blocks_below = {k: v for k, v in blocks.items() if k < block}
     if z == 0:
         return 'G'
     supporting = []
     for x in range(x1, x2+1):
         for y in range(y1, y2+1):
-            for k, v in blocks.items():
+            for k, v in blocks_below.items():
                 if [x, y, z] in v['coordinates']:
                     supporting.append(k)
     # print(f"Block {block} is supported by {supporting}")
@@ -54,8 +56,19 @@ def can_be_disintegrated(block, blocks):
 
 if __name__ == '__main__':
     # Parse input
-    with open('input_settled.txt') as f:
+    with open('input.txt') as f:
         lines = f.read().splitlines()
+
+    unsorted_blocks = []
+    for line in lines:
+        coords = line.split('~')
+        unsorted_blocks.append((
+            list(map(int, coords[0].split(','))),
+            list(map(int, coords[1].split(','))))
+        )
+
+    # Sort the blocks by z coordinate
+    sorted_blocks = sorted(unsorted_blocks, key=lambda x: x[0][2])
 
     # Create a dictionary of blocks
     # blocks = {
@@ -70,12 +83,11 @@ if __name__ == '__main__':
     # }
 
     blocks = {}
-    for i, line in enumerate(lines):
-        coords = line.split('~')
+    for i, block in enumerate(sorted_blocks):
         blocks[i+1] = {
             'coordinates': get_in_between_coordinates(
-                list(map(int, coords[0].split(','))),
-                list(map(int, coords[1].split(',')))
+                block[0],
+                block[1]
             ),
             'supports': set(),
             'supported_by': set()
@@ -83,17 +95,12 @@ if __name__ == '__main__':
 
     # Go through blocks and if they're not supported by a block below them,
     # Move them down until they are.
-    change = True
-    while change:
-        change = False
-        for block in blocks:
-            # Get the blocks that are supporting this block
-            while not is_supported_by(block, blocks):
-                # Decrease the z coordinate of the block
-                for coord in blocks[block]['coordinates']:
-                    coord[2] -= 1
-                change = True
-        print("Blocks moved down")
+    for block in blocks:
+        # Get the blocks that are supporting this block
+        while not is_supported_by(block, blocks):
+            # Decrease the z coordinate of the block
+            for coord in blocks[block]['coordinates']:
+                coord[2] -= 1
 
     # # Save the settled blocks to a file
     # with open('input_settled.txt', 'w') as f:
@@ -105,7 +112,6 @@ if __name__ == '__main__':
     # Populate the supports and supported_by lists
     for block in blocks:
         supported_by = is_supported_by(block, blocks)
-        print(f"Block {block} is supported by {supported_by}")
         if supported_by:
             blocks[block]['supported_by'] = set(supported_by)
             for support in supported_by:
@@ -116,6 +122,5 @@ if __name__ == '__main__':
     for block in blocks:
         if can_be_disintegrated(block, blocks):
             count += 1
-            print(f"Block {block} can be disintegrated")
 
     print(count)
