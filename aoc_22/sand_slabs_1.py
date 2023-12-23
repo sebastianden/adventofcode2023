@@ -56,7 +56,7 @@ def can_be_disintegrated(block, blocks):
 
 if __name__ == '__main__':
     # Parse input
-    with open('input.txt') as f:
+    with open('input_settled.txt') as f:
         lines = f.read().splitlines()
 
     unsorted_blocks = []
@@ -94,7 +94,8 @@ if __name__ == '__main__':
         }
 
     # Go through blocks and if they're not supported by a block below them,
-    # Move them down until they are.
+    # Move them down until they are. (This can take a while because I didn't
+    # care to optimize it, use the already settled input to speed it up)
     for block in blocks:
         # Get the blocks that are supporting this block
         while not is_supported_by(block, blocks):
