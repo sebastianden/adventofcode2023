@@ -39,7 +39,7 @@ if __name__ == '__main__':
     data = []
     for line in inp:
         d = line.replace(' @', ',')
-        d = [int(p) for p in d.split(',')]
+        d = tuple(int(p) for p in d.split(','))
         data.append(d)
 
     count = 0
