@@ -11,20 +11,14 @@ if __name__ == '__main__':
         d = tuple(int(p) for p in d.split(','))
         data.append(d)
 
-    x = Symbol('x')
-    y = Symbol('y')
-    z = Symbol('z')
-    vx = Symbol('vx')
-    vy = Symbol('vy')
-    vz = Symbol('vz')
+    x, y, z, vx, vy, vz = [Symbol(n) for n in ['x', 'y', 'z', 'vx', 'vy', 'vz']]
 
-    equ = []
-    t_c = []
+    equ, t_c = [], []
 
     for i, hail in enumerate(data[:3]):
         x0, y0, z0, vx_h, vy_h, vz_h = hail
+        
         t = Symbol('t'+str(i))
-
         equ += [
             x - x0 + (vx - vx_h) * t,
             y - y0 + (vy - vy_h) * t,
